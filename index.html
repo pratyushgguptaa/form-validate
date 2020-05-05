@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/564f21f8c6.js" crossorigin="anonymous"></script>
+    <title>[ Form Validation ]</title>
+
+    <style type="text/css">
+      body{
+        height:100vh;
+        background-image: linear-gradient(to top right, rgba(103,214,220,1), rgba(224,66,239,1)) ;
+      }
+      #bg{
+        opacity: 0.15;
+        position:absolute;
+        z-index: -2;
+        top:0; 
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .box{
+        border-radius: 10px;
+        padding:50px 30px;
+        background-color: #fff;
+        position:absolute;
+        top: 20%;
+        width: 40%;
+        left: 30%;
+      }
+      span{
+        text-align: center;
+      }
+      h3{
+        margin-bottom: 30px;
+        font-weight: 800;
+        position: relative;
+        font-family: Helvetica, Sans-Serif;
+        letter-spacing: 2px;
+        color: rgba(0,0,255,0.5); 
+      }
+
+      h3:after {
+        text-align: center;
+        content: "Get In Touch";
+        width: 100%;
+        position: absolute; left: 3px; top: 2px;
+        color: rgba(255,0,0,0.5);   
+      }
+
+      label{
+        font-weight: 600;
+        margin-bottom: 0;
+        position: relative;
+        width: 100%;
+        top: 4.5vh;
+        padding-left: 2px;
+        font-size: 97%;
+        color: #777;
+        cursor: pointer;
+      }
+      .bring-up{
+        
+        animation: up 1s 1;
+        animation-fill-mode: forwards;
+
+      }
+      @keyframes up{
+        100%{top: 0;
+        padding-left: 0;
+        font-size:77%;}
+      }
+      .bring-down{
+        top: 0;
+        padding-left: 0;
+        font-size:77%;
+        animation: down 1s 1;
+        animation-fill-mode: forwards;
+      }
+      @keyframes down{
+        100%{top: 4.5vh;
+        padding-left: 2px;
+        font-size:97%;}
+      }
+
+      input{
+        border: none !important;
+        border-bottom: 2px solid #bbb !important;
+        display: block;
+        width: 100%;
+        height: calc(1.5em + .75em + 2px);
+        padding: .375rem 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+      }
+      input:focus{
+        border: 0 0 2px 0 solid #bbb !important;
+        outline: none;
+      }
+      
+      /*Removing the Number type spin buttons from input*/
+      input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0; 
+        }
+      #formButton{
+        text-align: center;
+        margin: 20px 0 0 20%;
+        width: 60%;
+        padding: 5px 0;
+        border-radius: 18px;
+        
+        color: white;
+        background-image: linear-gradient(to left, rgba(103,214,220,1), rgba(224,66,239,1));
+        transition: background-image 1s;
+      }
+      #formButton:hover{
+        background-image: linear-gradient(to right, rgba(103,214,220,1), rgba(224,66,239,1));
+      }
+      #formButton:hover i{
+        margin-left: 4%;
+      }
+      button:focus{
+        outline:none;
+      }
+      #formButton:active{
+        border-bottom: 2px solid grey;
+        border-right: 2px solid grey;
+        filter: brightness(85%);
+      }
+
+      .error-modal{
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: #000;
+        background-color: rgba(0,0,0,0.4);
+      }
+      img[src="error.jpg"]{
+        width: 100%;
+      }
+
+      .error-content{
+        background-color: #fefefe;
+        margin: 10% auto;
+        width: 50%;
+      }
+      .error-message::before{
+        content: 'Error';
+        font-size: 200%;
+        font-weight: 800;
+
+      }
+      .error-message{
+        text-align: center;
+      }
+      #error-button{
+        border: 0px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-align: center;
+        margin: 10% 30%;
+        width: 40%;
+        padding:10px 0;
+        border-radius: 27px;
+        background-color: #d71818;
+        color: white;
+      }
+
+      .success-modal{
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: #000;
+        background-color: rgba(0,0,0,0.4);
+      }
+      .success-content{
+        border-radius: 5px;
+        background-color: #fefefe;
+        margin: 10% auto;
+        width: 30%;
+        text-align: center;
+        opacity: 0;
+      }
+      .modal-slide{
+        animation: slide 0.5s linear forwards;
+      }
+      @keyframes slide{
+        100%{opacity: 1;
+          margin-top:20%; }
+      }
+
+      .tick{
+        transform: scale(5);
+        border-radius: 50%; 
+        background-color: #fff;
+        color: yellowgreen;
+        font-size: 500%;
+        position: relative;
+        top: -40px;
+        opacity: 0;
+      }
+      .animate{
+        animation: tic 0.5s cubic-bezier(0.6, -0.28, 0.74, 0.05) forwards;
+      }
+      @keyframes tic{
+        100%{transform: scale(1);
+          opacity: 1;}
+      }
+      #success{
+        margin-top: -30px;
+        font-size: 200%;
+        font-weight: lighter;
+      }
+      #succes-message{
+        font-size: 150%;
+        font-weight: 600;
+      }
+      #success-button{
+        background-color: yellowgreen;
+        margin: 10% auto 5%;
+        width: 90%;
+        color: #fff;
+        border: 0;
+        border-radius: 5px;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      @media screen and (max-width: 800px) {
+        .box{
+          left: 20%;
+          width: 60%;
+        }
+      }
+      @media screen and (max-width: 600px) {
+        .box, .error-content, .success-content{
+          left: 10%;
+          width: 80%;
+        }
+      }
+      @media screen and (max-width: 450px) {
+        .box, .error-content, .success-content{
+          left: 5%;
+          width: 90%;
+          top: 5%;
+        }
+      }
+      @media screen and (max-height: 500px) {
+        .box, .error-content, .success-content{
+          top: 5%;
+        }
+      }
+
+
+    </style>
+
+
+  </head>
+  <body>
+    <img id="bg" src="bg.jpg" alt="background">
+
+    <div class="box">
+      <span><h3>Get In Touch</h3></span>
+
+      <form>
+        <div class="form-group">
+          <label for="name">NAME</label>
+          <input type="text" id="name">
+        </div>
+        <div class="form-group">
+          <label for="email">EMAIL</label>
+          <input type="text" id="email">
+        </div>
+        <div class="form-group">
+          <label for="sch-no">SCHOLAR NUMBER</label>
+          <input type="number" id="sch-no">
+        </div>
+        
+        <button id="formButton" type="submit">Submit &nbsp&nbsp<i class="fas fa-long-arrow-alt-right"></i></button>
+      </form>
+    </div>
+
+    <div class="error-modal">
+      <div class="error-content">
+        <img src="error.jpg" alt="error.jpg">
+        <div class="error-message">
+          
+        </div>
+        <button id="error-button" type="submit" onclick="$('.error-modal').hide();">Close</button>
+      </div>
+    </div>
+
+    <div class="success-modal">
+      <div class="success-content">
+        <i class="tick fas fa-check-circle"></i>
+        <div id="success">Success</div>
+        <div id="success-message">Check your email for a confirmation.<br> We'll see you soon!</div>
+        <button id="success-button" type="submit" onclick="$('.success-modal').hide()">OK</button>
+      </div>
+    </div>
+
+    
+    
+
+    <!-- Optional JavaScript -->
+    <script type="text/javascript">
+      $("label").addClass("bring-down");
+      //$("input").addClass("form-control");
+      //$("input").attr("onfocusout",myF);
+
+      $("label").click(function(){
+        $(this).toggleClass("bring-up bring-down");
+      });
+
+      $("input").blur(function(){
+        if($(this).val()==''){
+          $("label[for='" + $(this).attr('id') + "']").toggleClass("bring-down bring-up");
+        }
+        else{            
+        }
+      });
+
+      $("form").submit(function(e) {
+        e.preventDefault();
+        var error="";
+        var pattern_name=/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+        var pattern_email=/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+        var pattern_number=3;
+
+        var name=$("#name").val();
+        var email=$("#email").val();
+        var num=$("#sch-no").val();
+
+        if(name==''){
+          error+="Please enter your name.<br>"
+        }else if(pattern_name.test(name)){
+          ;
+        } else{
+          error+="Please enter a valid name.<br>"
+        }
+
+        if(email==''){
+          error+="Please enter your email id.<br>"
+        }else if(pattern_email.test(email)){
+          ;
+        } else{
+          error+="Please enter a valid email id.<br>"
+        }
+
+        if(num==''){
+          error+="Please enter your 9 digit Scholar Number.<br>"
+        }else if(num.length==9){
+          ;
+        } else{
+          error+="Please enter a valid 9 digit Scholar Number.<br>"
+        }
+
+        if(error==''){
+          $(".success-modal").show();
+          $(".success-content").addClass('modal-slide');
+          $(".tick").addClass('animate');
+          
+
+
+        } else {
+          $(".error-modal").show();
+          $(".error-message").html("<br>"+error);
+        }
+      });
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>
